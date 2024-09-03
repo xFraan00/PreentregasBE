@@ -1,14 +1,15 @@
-const express = require("express");
-const router = express.Router();
-const CartManager = require("../classes/CartManager.js");
+import { Router } from "express";
+import CartManager from "../classes/CartManager.js"
+
+const cartsRouter = Router();
 const cartManager = new CartManager("./src/data/cart.json");
 
-router.post("/api/carts/", async (req, res) => {
+cartsRouter.post("/api/carts/", async (req, res) => {
     await cartManager.createCart();
     res.send({message: "Se creó el carrito correctamente"});
 });
 
-router.get("/api/carts/:cid", async (req, res) => {
+cartsRouter.get("/api/carts/:cid", async (req, res) => {
     const cartId = parseInt(req.params.cid);
     const cartContent = await cartManager.getCartContent(cartId);
 
@@ -19,11 +20,11 @@ router.get("/api/carts/:cid", async (req, res) => {
     };
 });
 
-router.post("/api/carts/:cid/product/:pid", async (req, res) => {
+cartsRouter.post("/api/carts/:cid/product/:pid", async (req, res) => {
     const cartId = parseInt(req.params.cid);
     const productId = parseInt(req.params.pid);
     await cartManager.addToCart(cartId, productId);
     res.send({message: "Producto agregado al carrito con éxito"});
 });
 
-module.exports = router;
+export default cartsRouter;
